@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
 import { View } from 'react-native';
@@ -29,9 +30,13 @@ import formatValue from '../../utils/formatValue';
 
 interface Product {
   id: string;
+
   title: string;
+
   image_url: string;
+
   price: number;
+
   quantity: number;
 }
 
@@ -39,23 +44,28 @@ const Cart: React.FC = () => {
   const { increment, decrement, products } = useCart();
 
   function handleIncrement(id: string): void {
-    // TODO
+    increment(id);
   }
 
   function handleDecrement(id: string): void {
-    // TODO
+    decrement(id);
   }
 
   const cartTotal = useMemo(() => {
-    // TODO RETURN THE SUM OF THE QUANTITY OF THE PRODUCTS IN THE CART
+    const total = products.reduce((accumulator, product) => {
+      const productSubtotal = product.price * product.quantity;
+      return accumulator + productSubtotal;
+    }, 0);
 
-    return formatValue(0);
+    return formatValue(total);
   }, [products]);
 
   const totalItensInCart = useMemo(() => {
-    // TODO RETURN THE SUM OF THE QUANTITY OF THE PRODUCTS IN THE CART
+    const totalItens = products.reduce((accumulator, product) => {
+      return accumulator + product.quantity;
+    }, 0);
 
-    return 0;
+    return totalItens;
   }, [products]);
 
   return (
@@ -71,8 +81,10 @@ const Cart: React.FC = () => {
           renderItem={({ item }: { item: Product }) => (
             <Product>
               <ProductImage source={{ uri: item.image_url }} />
+
               <ProductTitleContainer>
                 <ProductTitle>{item.title}</ProductTitle>
+
                 <ProductPriceContainer>
                   <ProductSinglePrice>
                     {formatValue(item.price)}
@@ -87,6 +99,7 @@ const Cart: React.FC = () => {
                   </TotalContainer>
                 </ProductPriceContainer>
               </ProductTitleContainer>
+
               <ActionContainer>
                 <ActionButton
                   testID={`increment-${item.id}`}
@@ -94,6 +107,7 @@ const Cart: React.FC = () => {
                 >
                   <FeatherIcon name="plus" color="#E83F5B" size={16} />
                 </ActionButton>
+
                 <ActionButton
                   testID={`decrement-${item.id}`}
                   onPress={() => handleDecrement(item.id)}
@@ -105,9 +119,12 @@ const Cart: React.FC = () => {
           )}
         />
       </ProductContainer>
+
       <TotalProductsContainer>
         <FeatherIcon name="shopping-cart" color="#fff" size={24} />
+
         <TotalProductsText>{`${totalItensInCart} itens`}</TotalProductsText>
+
         <SubtotalValue>{cartTotal}</SubtotalValue>
       </TotalProductsContainer>
     </Container>
